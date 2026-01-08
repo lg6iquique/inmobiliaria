@@ -1,0 +1,64 @@
+{% extends 'web/base.html' %}
+
+{% block title %}Detalle de Persona{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Detalle de Persona</h2>
+    <a href="{% url 'persona_list' %}" class="btn btn-secondary">Volver al Listado</a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <strong>RUT:</strong>
+            </div>
+            <div class="col-md-8">
+                {{ persona.rut }}
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <strong>Nombre Completo:</strong>
+            </div>
+            <div class="col-md-8">
+                {{ persona.get_nombre_completo }}
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <strong>Dirección:</strong>
+            </div>
+            <div class="col-md-8">
+                {{ persona.direccion }}
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <strong>Ciudad:</strong>
+            </div>
+            <div class="col-md-8">
+                {{ persona.ciudad }}
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <strong>Aseguradora de Salud:</strong>
+            </div>
+            <div class="col-md-8">
+                {{ persona.get_aseguradora_salud_display }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a href="{% url 'persona_delete' persona.pk %}" class="btn btn-danger">Eliminar</a>
+    <a href="{% url 'persona_list' %}" class="btn btn-secondary">Volver</a>
+</div>
+{% endblock %}
