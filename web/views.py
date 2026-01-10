@@ -5,8 +5,8 @@ from .forms import PersonaForm
 
 
 def index(request):
-    """Vista principal - Hola Mundo."""
-    return HttpResponse("Hola Mundo")
+    """Vista principal - Página de inicio."""
+    return render(request, 'inicio.html')
 
 
 def persona_list(request):
