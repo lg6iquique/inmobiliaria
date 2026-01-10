@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Eliminar Usuario{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h3 class="mb-0">Confirmar Eliminación</h3>
+            </div>
+            <div class="card-body">
+                <p>¿Estás seguro de que deseas desactivar al usuario <strong>{{ usuario.username }}</strong>?</p>
+                <p class="text-muted">Esta acción no eliminará los datos permanentemente, solo marcará al usuario como
+                    inactivo.</p>
+
+                <div class="alert alert-warning">
+                    <strong>Usuario:</strong> {{ usuario.get_nombre_completo }}<br>
+                    <strong>RUT:</strong> {{ usuario.rut }}
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="{% url 'usuarios:lista' %}" class="btn btn-secondary">Cancelar</a>
+                        <button type="submit" class="btn btn-danger">Confirmar Desactivación</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

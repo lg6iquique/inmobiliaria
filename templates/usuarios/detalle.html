@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalle de Usuario{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="mb-0">Detalle de Usuario</h3>
+                <span class="badge {% if usuario.is_active %}bg-success{% else %}bg-danger{% endif %}">
+                    {% if usuario.is_active %}Activo{% else %}Inactivo{% endif %}
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">RUT:</div>
+                    <div class="col-sm-8">{{ usuario.rut }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Username:</div>
+                    <div class="col-sm-8">{{ usuario.username }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Nombre Completo:</div>
+                    <div class="col-sm-8">{{ usuario.get_nombre_completo }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Email:</div>
+                    <div class="col-sm-8">{{ usuario.email }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Teléfono:</div>
+                    <div class="col-sm-8">{{ usuario.telefono|default:"-" }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Dirección:</div>
+                    <div class="col-sm-8">{{ usuario.direccion|default:"-" }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Ciudad:</div>
+                    <div class="col-sm-8">{{ usuario.ciudad|default:"-" }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Fecha de Registro:</div>
+                    <div class="col-sm-8">{{ usuario.date_joined|date:"d/m/Y H:i" }}</div>
+                </div>
+            </div>
+            <div class="card-footer d-flex justify-content-end gap-2">
+                <a href="{% url 'usuarios:lista' %}" class="btn btn-secondary">Volver</a>
+                <a href="{% url 'usuarios:editar' usuario.pk %}" class="btn btn-primary">Editar</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
