@@ -37,9 +37,16 @@ def save_uploaded_image(propiedad, uploaded_file, es_principal=False, orden=0):
         orden=orden
     )
 
+from django.core.paginator import Paginator
+
 def propiedad_list(request):
-    propiedades = Propiedad.objects.exclude(estado='INACTIVO')
+    propiedades_list = Propiedad.objects.exclude(estado='INACTIVO')
+    paginator = Paginator(propiedades_list, 6) # Show 6 properties per page
+
+    page_number = request.GET.get('page')
+    propiedades = paginator.get_page(page_number)
     return render(request, 'propiedades/list.html', {'propiedades': propiedades})
+
 
 def propiedad_detail(request, pk):
     propiedad = get_object_or_404(Propiedad, pk=pk)

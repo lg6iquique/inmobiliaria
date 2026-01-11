@@ -8,52 +8,110 @@
     <a href="{% url 'propiedades:create' %}" class="btn btn-primary">Nueva Propiedad</a>
 </div>
 
-<div class="row">
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
     {% for propiedad in propiedades %}
-    <div class="col-md-4 mb-4">
-        <div class="card h-100">
+    <div class="col">
+        <div class="card h-100 shadow-sm">
             {% with principal=propiedad.imagenes.first %}
             {% if principal %}
-            <img src="{{ MEDIA_URL }}{{ principal.ruta_archivo }}" class="card-img-top" alt="Imagen propiedad"
-                style="height: 200px; object-fit: cover;">
+            <div class="position-relative">
+                <img src="{{ MEDIA_URL }}{{ principal.ruta_archivo }}" class="card-img-top" alt="Imagen propiedad"
+                    style="height: 220px; object-fit: cover;">
+                <span class="position-absolute top-0 end-0 badge bg-primary m-2">{{ propiedad.get_operacion_display
+                    }}</span>
+            </div>
             {% else %}
-            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
-                <span class="text-muted">Sin imagen</span>
+            <div class="card-img-top bg-light d-flex align-items-center justify-content-center text-secondary"
+                style="height: 220px;">
+                <div class="text-center">
+                    <i class="bi bi-image fs-1 d-block mb-1"></i>
+                    <span>Sin imagen</span>
+                </div>
+                <span class="position-absolute top-0 end-0 badge bg-primary m-2">{{ propiedad.get_operacion_display
+                    }}</span>
             </div>
             {% endif %}
             {% endwith %}
             <div class="card-body">
-                <h5 class="card-title">{{ propiedad.get_tipo_propiedad_display }} en {{ propiedad.comuna }}</h5>
-                <p class="card-text">
-                    <strong>{{ propiedad.get_operacion_display }}</strong><br>
-                    {% if propiedad.precio_venta_clp > 0 %}
-                    Venta: ${{ propiedad.precio_venta_clp|floatformat:"0"|default:"-" }}<br>
+                <h5 class="card-title text-truncate mb-1">{{ propiedad.get_tipo_propiedad_display }} en {{
+                    propiedad.comuna }}</h5>
+                <p class="text-muted small mb-3"><i class="bi bi-geo-alt-fill"></i> {{ propiedad.region }}</p>
 
+                <div class="mb-3">
+                    {% if propiedad.precio_venta_clp > 0 %}
+                    <h5 class="text-success mb-0">${{ propiedad.precio_venta_clp|floatformat:"0"|default:"-" }}</h5>
+                    <small class="text-muted">Venta</small>
                     {% endif %}
                     {% if propiedad.precio_arriendo_clp > 0 %}
-                    Arriendo: ${{ propiedad.precio_arriendo_clp|floatformat:"0"|default:"-" }}<br>
-
+                    <h5 class="text-primary mb-0 mt-1">${{ propiedad.precio_arriendo_clp|floatformat:"0"|default:"-" }}
+                    </h5>
+                    <small class="text-muted">Arriendo</small>
                     {% endif %}
-                </p>
-                <div class="small text-muted mb-2">
-                    {{ propiedad.superficie_total_m2 }} m² totales • {{ propiedad.numero_piezas }} dorm • {{
-                    propiedad.numero_banos }} baños
                 </div>
-                <span class="badge {% if propiedad.estado == 'ACTIVO' %}bg-success{% else %}bg-secondary{% endif %}">{{
-                    propiedad.get_estado_display }}</span>
+
+                <div class="d-flex justify-content-between border-top pt-2 mt-auto text-muted small">
+                    <span title="Superficie Total"><i class="bi bi-arrows-fullscreen"></i> {{
+                        propiedad.superficie_total_m2|floatformat:"0" }} m²</span>
+                    <span title="Dormitorios"><i class="bi bi-door-closed"></i> {{ propiedad.numero_piezas }}</span>
+                    <span title="Baños"><i class="bi bi-droplet"></i> {{ propiedad.numero_banos }}</span>
+                </div>
             </div>
-            <div class="card-footer bg-transparent border-top-0">
-                <div class="d-grid gap-2">
-                    <a href="{% url 'propiedades:detail' propiedad.pk %}" class="btn btn-outline-primary btn-sm">Ver
-                        Detalle</a>
+            <div class="card-footer bg-white border-top-0 pt-0">
+                <div class="d-grid">
+                    <a href="{% url 'propiedades:detail' propiedad.pk %}" class="btn btn-outline-primary">Ver
+                        Detalles</a>
                 </div>
             </div>
         </div>
     </div>
     {% empty %}
     <div class="col-12">
-        <div class="alert alert-info">No hay propiedades activas registradas.</div>
+        <div class="alert alert-info py-4 text-center">
+            <i class="bi bi-info-circle fs-4 d-block mb-2"></i>
+            No hay propiedades activas registradas en este momento.
+        </div>
     </div>
     {% endfor %}
 </div>
+
+<!-- Pagination Controls -->
+{% if propiedades.has_other_pages %}
+<nav aria-label="Navegación de propiedades" class="mt-5">
+    <ul class="pagination justify-content-center">
+        {% if propiedades.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ propiedades.previous_page_number }}" aria-label="Anterior">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <span class="page-link" aria-hidden="true">&laquo;</span>
+        </li>
+        {% endif %}
+
+        {% for i in propiedades.paginator.page_range %}
+        {% if propiedades.number == i %}
+        <li class="page-item active" aria-current="page">
+            <span class="page-link">{{ i }}</span>
+        </li>
+        {% else %}
+        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+        {% endif %}
+        {% endfor %}
+
+        {% if propiedades.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ propiedades.next_page_number }}" aria-label="Siguiente">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <span class="page-link" aria-hidden="true">&raquo;</span>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
 {% endblock %}
