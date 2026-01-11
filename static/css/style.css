@@ -1,0 +1,29 @@
+/* Social Media Icons */
+.social-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    transition: transform 0.3s ease, fill 0.3s ease;
+    display: inline-block;
+}
+
+.social-icon:hover {
+    transform: scale(1.15);
+}
+
+.social-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+/* Brand Colors */
+.text-instagram:hover { color: #E1306C !important; }
+.text-facebook:hover { color: #1877F2 !important; }
+.text-whatsapp:hover { color: #25D366 !important; }
+
+/* SVG Fill Transition */
+.social-link svg {
+    fill: currentColor;
+}

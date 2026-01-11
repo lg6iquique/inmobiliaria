@@ -4,9 +4,18 @@ from .models import Persona
 from .forms import PersonaForm
 
 
-def index(request):
-    """Vista principal - Página de inicio."""
+from propiedades.models import Propiedad
+
+def portada(request):
+    """Vista pública - Portada del sitio."""
+    propiedades_destacadas = Propiedad.objects.filter(destacada=True, estado='ACTIVO')[:6]
+    return render(request, 'portada.html', {'propiedades': propiedades_destacadas})
+
+
+def administracion(request):
+    """Vista interna - Panel de administración (antes index)."""
     return render(request, 'inicio.html')
+
 
 
 def persona_list(request):
