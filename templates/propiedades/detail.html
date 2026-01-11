@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalle Propiedad{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>{{ propiedad.get_tipo_propiedad_display }} en {{ propiedad.comuna }}</h2>
+    <div class="btn-group">
+        <a href="{% url 'propiedades:list' %}" class="btn btn-secondary">Volver</a>
+        <a href="{% url 'propiedades:update' propiedad.pk %}" class="btn btn-warning">Editar</a>
+        <a href="{% url 'propiedades:delete' propiedad.pk %}" class="btn btn-danger">Eliminar</a>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Información Principal -->
+    <div class="col-md-8">
+        <!-- Galería de Imágenes -->
+        <div class="card mb-4">
+            <div class="card-body">
+                {% if propiedad.imagenes.exists %}
+                <div id="carouselPropiedad" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        {% for img in propiedad.imagenes.all %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <img src="{{ MEDIA_URL }}{{ img.ruta_archivo }}" class="d-block w-100"
+                                style="max-height: 500px; object-fit: contain; background-color: #f8f9fa;"
+                                alt="Propiedad: {{ propiedad.comuna }}">
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% if propiedad.imagenes.count > 1 %}
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselPropiedad"
+                        data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon bg-dark rounded-circle" aria-hidden="true"></span>
+                        <span class="visually-hidden">Anterior</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselPropiedad"
+                        data-bs-slide="next">
+                        <span class="carousel-control-next-icon bg-dark rounded-circle" aria-hidden="true"></span>
+                        <span class="visually-hidden">Siguiente</span>
+                    </button>
+                    {% endif %}
+                </div>
+                {% else %}
+                <div class="text-center py-5 bg-light">
+                    <p class="text-muted mb-0">Esta propiedad no tiene imágenes</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Descripción y detalles -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Características</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <small class="text-muted d-block">Superficie Total</small>
+                        <strong>{{ propiedad.superficie_total_m2 }} m²</strong>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <small class="text-muted d-block">Superficie Construida</small>
+                        <strong>{{ propiedad.superficie_construida_m2 }} m²</strong>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <small class="text-muted d-block">Dormitorios</small>
+                        <strong>{{ propiedad.numero_piezas }}</strong>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <small class="text-muted d-block">Baños</small>
+                        <strong>{{ propiedad.numero_banos }}</strong>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <small class="text-muted d-block">Estacionamientos</small>
+                        <strong>{{ propiedad.estacionamientos }}</strong>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <small class="text-muted d-block">Bodegas</small>
+                        <strong>{{ propiedad.bodegas }}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Ubicación</h5>
+            </div>
+            <div class="card-body">
+                <p class="mb-1">{{ propiedad.direccion }}</p>
+                <p>{{ propiedad.comuna }}, {{ propiedad.region }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar con Resumen -->
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Resumen</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <small class="text-muted d-block">Tipo Operación</small>
+                    <span class="h5">{{ propiedad.get_operacion_display }}</span>
+                </div>
+                <hr>
+                {% if propiedad.precio_venta_clp > 0 %}
+                <div class="mb-2">
+                    <small class="text-muted d-block">Precio Venta</small>
+                    <span class="h4 text-success">${{ propiedad.precio_venta_clp|floatformat:"0" }}</span>
+
+                    <br>
+                    <small class="text-muted">{{ propiedad.precio_venta_uf }} UF</small>
+                </div>
+                {% endif %}
+
+                {% if propiedad.precio_arriendo_clp > 0 %}
+                <div class="mb-2">
+                    <small class="text-muted d-block">Precio Arriendo</small>
+                    <span class="h4 text-primary">${{ propiedad.precio_arriendo_clp|floatformat:"0" }}</span>
+
+                    <br>
+                    <small class="text-muted">{{ propiedad.precio_arriendo_uf }} UF</small>
+                </div>
+                {% endif %}
+
+                <hr>
+                <div class="mb-2">
+                    <small class="text-muted d-block">Estado</small>
+                    <span
+                        class="badge {% if propiedad.estado == 'ACTIVO' %}bg-success{% else %}bg-secondary{% endif %}">{{
+                        propiedad.get_estado_display }}</span>
+                </div>
+                <div class="mb-2">
+                    <small class="text-muted d-block">Código</small>
+                    <span>{{ propiedad.codigo|default:"-" }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Propiedades{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Propiedades</h1>
+    <a href="{% url 'propiedades:create' %}" class="btn btn-primary">Nueva Propiedad</a>
+</div>
+
+<div class="row">
+    {% for propiedad in propiedades %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            {% with principal=propiedad.imagenes.first %}
+            {% if principal %}
+            <img src="{{ MEDIA_URL }}{{ principal.ruta_archivo }}" class="card-img-top" alt="Imagen propiedad"
+                style="height: 200px; object-fit: cover;">
+            {% else %}
+            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                <span class="text-muted">Sin imagen</span>
+            </div>
+            {% endif %}
+            {% endwith %}
+            <div class="card-body">
+                <h5 class="card-title">{{ propiedad.get_tipo_propiedad_display }} en {{ propiedad.comuna }}</h5>
+                <p class="card-text">
+                    <strong>{{ propiedad.get_operacion_display }}</strong><br>
+                    {% if propiedad.precio_venta_clp > 0 %}
+                    Venta: ${{ propiedad.precio_venta_clp|floatformat:"0"|default:"-" }}<br>
+
+                    {% endif %}
+                    {% if propiedad.precio_arriendo_clp > 0 %}
+                    Arriendo: ${{ propiedad.precio_arriendo_clp|floatformat:"0"|default:"-" }}<br>
+
+                    {% endif %}
+                </p>
+                <div class="small text-muted mb-2">
+                    {{ propiedad.superficie_total_m2 }} m² totales • {{ propiedad.numero_piezas }} dorm • {{
+                    propiedad.numero_banos }} baños
+                </div>
+                <span class="badge {% if propiedad.estado == 'ACTIVO' %}bg-success{% else %}bg-secondary{% endif %}">{{
+                    propiedad.get_estado_display }}</span>
+            </div>
+            <div class="card-footer bg-transparent border-top-0">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'propiedades:detail' propiedad.pk %}" class="btn btn-outline-primary btn-sm">Ver
+                        Detalle</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info">No hay propiedades activas registradas.</div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
